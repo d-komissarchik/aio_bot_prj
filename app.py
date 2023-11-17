@@ -35,3 +35,14 @@ async def admin_mode(message: types.Message):
 
     await message.answer('Включено адмінський режим.',
                          reply_markup=ReplyKeyboardRemove())
+
+
+@dp.message_handler(text=user_message)
+async def user_mode(message: types.Message):
+    cid = message.chat.id
+    if cid in ADMINS:
+        ADMINS.remove(cid)
+
+    await message.answer('Увімкнено режим користувача.',
+                         reply_markup=ReplyKeyboardRemove())
+
