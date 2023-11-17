@@ -1,5 +1,8 @@
 from aiogram import types
 from aiogram.types import ReplyKeyboardMarkup
+from aiogram.types import ReplyKeyboardRemove
+
+from data.config import ADMINS
 from loader import dp
 
 user_message = 'Користувач'
@@ -22,3 +25,13 @@ async def cmd_start(message: types.Message):
 ❓ Виникли питання? Не проблема! Команда /sos допоможе
 зв'язатися з адмінами, які постараються якнайшвидше відгукнутися.
     ''', reply_markup=markup)
+
+
+@dp.message_handler(text=admin_message)
+async def admin_mode(message: types.Message):
+    cid = message.chat.id
+    if cid not in ADMINS:
+        ADMINS.append(cid)
+
+    await message.answer('Включено адмінський режим.',
+                         reply_markup=ReplyKeyboardRemove())
