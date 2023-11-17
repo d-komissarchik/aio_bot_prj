@@ -21,7 +21,6 @@ class DatabaseManager:
             'quantity int)')
         self.query(
             'CREATE TABLE IF NOT EXISTS categories (idx text, title text)')
-        self.query('CREATE TABLE IF NOT EXISTS wallet (cid int, balance real)')
         self.query(
             'CREATE TABLE IF NOT EXISTS questions (cid int, question text)')
 
