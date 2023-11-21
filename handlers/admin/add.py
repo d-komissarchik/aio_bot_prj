@@ -35,6 +35,8 @@ async def add_category_callback_handler(query: CallbackQuery):
 
 
 
+
+
 @dp.message_handler(IsAdmin(), state=CategoryState.title)
 async def set_category_title_handler(message: Message, state: FSMContext):
 
