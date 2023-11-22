@@ -85,4 +85,9 @@ async def show_products(m, products, category_idx):
                              caption=text,
                              reply_markup=markup)
 
+    markup = ReplyKeyboardMarkup()
+    markup.add(add_product)
+    markup.add(delete_category)
 
+    await m.answer('Бажаєте щось додати або видалити?',
+                   reply_markup=markup)
