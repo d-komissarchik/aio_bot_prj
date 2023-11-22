@@ -1,14 +1,24 @@
-from loader import dp, db
-from filters import IsAdmin
-from handlers.user.menu import settings
+
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 from aiogram.types import CallbackQuery
-from states import CategoryState
 from hashlib import md5
 from aiogram.dispatcher import FSMContext
+from aiogram.types.chat import ChatActions
+from aiogram.types import ReplyKeyboardMarkup
+
+from handlers.user.menu import settings
+from states import CategoryState
+from loader import bot
+from loader import dp, db
+from filters import IsAdmin
 
 category_cb = CallbackData('category', 'id', 'action')
+product_cb = CallbackData('product', 'id', 'action')
+
+cancel_message = '🚫 Скасувати'
+add_product = '➕ Додати гру'
+delete_category = '🗑️ Видалити категорію'
 
 
 @dp.message_handler(IsAdmin(), text=settings)
@@ -58,3 +68,21 @@ async def category_callback_handler(query: CallbackQuery, callback_data: dict,
     await query.answer('Усі додані товари до цієї категорії.')
     await state.update_data(category_index=category_idx)
     await show_products(query.message, products, category_idx)
+
+
+async def show_products(m, products, category_idx):
+    await bot.send_chat_action(m.chat.id, ChatActions.TYPING)
+
+    for idx, title, body, image, price, tag in products:
+        text = f'<b>{title}</b>\n\n{body}\n\nЦіна: {price} гривень.'
+
+        markup = InlineKeyboardMarkup()
+        markup.add(InlineKeyboardButton(
+            '🗑️ Видалити',
+            callback_data=product_cb.new(id=idx, action='delete')))
+
+        await m.answer_photo(photo=image,
+                             caption=text,
+                             reply_markup=markup)
+
+
