@@ -35,8 +35,6 @@ async def add_category_callback_handler(query: CallbackQuery):
 
 
 
-
-
 @dp.message_handler(IsAdmin(), state=CategoryState.title)
 async def set_category_title_handler(message: Message, state: FSMContext):
 
@@ -46,3 +44,17 @@ async def set_category_title_handler(message: Message, state: FSMContext):
 
     await state.finish()
     await process_settings(message)
+
+@dp.callback_query_handler(IsAdmin(), category_cb.filter(action='view'))
+async def category_callback_handler(query: CallbackQuery, callback_data: dict,
+                                    state: FSMContext):
+    category_idx = callback_data['id']
+
+    products = db.fetchall('''SELECT * FROM products product
+    WHERE product.tag = (SELECT title FROM categories WHERE idx=?)''',
+                           (category_idx,))
+
+    await query.message.delete()
+    await query.answer('Усі додані товари до цієї категорії.')
+    await state.update_data(category_index=category_idx)
+    await show_products(query.message, products, category_idx)
