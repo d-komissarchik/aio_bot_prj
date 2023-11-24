@@ -1,4 +1,3 @@
-
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.callback_data import CallbackData
 from aiogram.types import CallbackQuery
@@ -12,6 +11,7 @@ from states import CategoryState
 from loader import bot
 from loader import dp, db
 from filters import IsAdmin
+
 
 category_cb = CallbackData('category', 'id', 'action')
 product_cb = CallbackData('product', 'id', 'action')
