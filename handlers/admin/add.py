@@ -8,7 +8,7 @@ from aiogram.types import ReplyKeyboardMarkup
 from aiogram.types import ReplyKeyboardRemove
 
 from handlers.user.menu import settings
-from states import CategoryState
+from states import CategoryState, ProductState
 from loader import bot
 from loader import dp, db
 from filters import IsAdmin
@@ -108,3 +108,14 @@ async def delete_category_handler(message: Message, state: FSMContext):
 
             await message.answer('Готово!', reply_markup=ReplyKeyboardRemove())
             await process_settings(message)
+
+
+
+@dp.message_handler(IsAdmin(), text=add_product)
+async def process_add_product(message: Message):
+    await ProductState.title.set()
+
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(cancel_message)
+
+    await message.answer('Яка назва гри?', reply_markup=markup)
