@@ -20,6 +20,7 @@ product_cb = CallbackData('product', 'id', 'action')
 cancel_message = '🚫 Скасувати'
 add_product = '➕ Додати гру'
 delete_category = '🗑️ Видалити категорію'
+back_message = '👈 Назад'
 
 
 @dp.message_handler(IsAdmin(), text=settings)
@@ -127,3 +128,30 @@ async def process_cancel(message: Message, state: FSMContext):
     await state.finish()
 
     await process_settings(message)
+
+@dp.message_handler(IsAdmin(), state=ProductState.title)
+async def process_title(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['title'] = message.text
+
+    await ProductState.next()
+    await message.answer('Описание?', reply_markup=back_markup())
+
+
+def back_markup():
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    markup.add(back_message)
+    return markup
+
+@dp.message_handler(IsAdmin(), text=back_message, state=ProductState.title)
+async def process_title_back(message: Message, state: FSMContext):
+    await process_add_product(message)
+
+
+@dp.message_handler(IsAdmin(), text=back_message, state=ProductState.body)
+async def process_body_back(message: Message, state: FSMContext):
+    await ProductState.title.set()
+
+    async with state.proxy() as data:
+        await message.answer(f"Змінити назву з <b>{data['title']}</b>?",
+                             reply_markup=back_markup())
