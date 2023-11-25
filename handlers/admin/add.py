@@ -119,3 +119,11 @@ async def process_add_product(message: Message):
     markup.add(cancel_message)
 
     await message.answer('Яка назва гри?', reply_markup=markup)
+
+
+@dp.message_handler(IsAdmin(), text=cancel_message, state=ProductState.title)
+async def process_cancel(message: Message, state: FSMContext):
+    await message.answer('Ок, скасовано!', reply_markup=ReplyKeyboardRemove())
+    await state.finish()
+
+    await process_settings(message)
