@@ -13,7 +13,6 @@ from loader import bot
 from loader import dp, db
 from filters import IsAdmin
 
-
 category_cb = CallbackData('category', 'id', 'action')
 product_cb = CallbackData('product', 'id', 'action')
 
