@@ -5,6 +5,7 @@ from hashlib import md5
 from aiogram.dispatcher import FSMContext
 from aiogram.types.chat import ChatActions
 from aiogram.types import ReplyKeyboardMarkup
+from aiogram.types import ReplyKeyboardRemove
 
 from handlers.user.menu import settings
 from states import CategoryState
@@ -91,3 +92,19 @@ async def show_products(m, products, category_idx):
 
     await m.answer('Бажаєте щось додати або видалити?',
                    reply_markup=markup)
+
+
+@dp.message_handler(IsAdmin(), text=delete_category)
+async def delete_category_handler(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        if 'category_index' in data.keys():
+            idx = data['category_index']
+
+            db.query(
+                'DELETE FROM products WHERE tag IN (SELECT '
+                'title FROM categories WHERE idx=?)',
+                (idx,))
+            db.query('DELETE FROM categories WHERE idx=?', (idx,))
+
+            await message.answer('Готово!', reply_markup=ReplyKeyboardRemove())
+            await process_settings(message)
