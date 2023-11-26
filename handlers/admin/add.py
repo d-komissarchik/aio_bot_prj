@@ -134,7 +134,7 @@ async def process_title(message: Message, state: FSMContext):
         data['title'] = message.text
 
     await ProductState.next()
-    await message.answer('Описание?', reply_markup=back_markup())
+    await message.answer('Який опис?', reply_markup=back_markup())
 
 
 def back_markup():
@@ -152,5 +152,5 @@ async def process_body_back(message: Message, state: FSMContext):
     await ProductState.title.set()
 
     async with state.proxy() as data:
-        await message.answer(f"Змінити назву з <b>{data['title']}</b>?",
+        await message.answer(f"Змінити назву <b>{data['title']}</b>?",
                              reply_markup=back_markup())
