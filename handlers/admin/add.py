@@ -154,3 +154,11 @@ async def process_body_back(message: Message, state: FSMContext):
     async with state.proxy() as data:
         await message.answer(f"Змінити назву <b>{data['title']}</b>?",
                              reply_markup=back_markup())
+
+@dp.message_handler(IsAdmin(), state=ProductState.body)
+async def process_body(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['body'] = message.text
+
+    await ProductState.next()
+    await message.answer('Додати фото?', reply_markup=back_markup())
