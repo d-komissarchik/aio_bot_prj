@@ -21,6 +21,7 @@ cancel_message = '🚫 Скасувати'
 add_product = '➕ Додати гру'
 delete_category = '🗑️ Видалити категорію'
 back_message = '👈 Назад'
+all_right_message = '✅ Все вірно'
 
 
 @dp.message_handler(IsAdmin(), text=settings)
@@ -177,3 +178,54 @@ async def process_image_photo(message: Message, state: FSMContext):
 
     await ProductState.next()
     await message.answer('Яка ціна?', reply_markup=back_markup())
+
+
+@dp.message_handler(IsAdmin(), lambda message: message.text.isdigit(),
+                    state=ProductState.price)
+async def process_price(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['price'] = message.text
+
+        title = data['title']
+        body = data['body']
+        price = data['price']
+
+        await ProductState.next()
+        text = f'<b>{title}</b>\n\n{body}\n\nЦіна: {price} гривень.'
+
+        markup = check_markup()
+
+        await message.answer_photo(photo=data['image'],
+                                   caption=text,
+                                   reply_markup=markup)
+
+
+
+def check_markup():
+    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+    markup.row(back_message, all_right_message)
+
+    return markup
+
+
+@dp.message_handler(IsAdmin(), text=all_right_message,
+                    state=ProductState.confirm)
+async def process_confirm(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        title = data['title']
+        body = data['body']
+        image = data['image']
+        price = data['price']
+
+        tag = db.fetchone(
+            'SELECT title FROM categories WHERE idx=?',
+            (data['category_index'],))[0]
+        idx = md5(' '.join([title, body, price, tag]
+                           ).encode('utf-8')).hexdigest()
+
+        db.query('INSERT INTO products VALUES (?, ?, ?, ?, ?, ?)',
+                 (idx, title, body, image, int(price), tag))
+
+    await state.finish()
+    await message.answer('Готово!', reply_markup=ReplyKeyboardRemove())
+    await process_settings(message)
