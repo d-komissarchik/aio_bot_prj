@@ -6,6 +6,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types.chat import ChatActions
 from aiogram.types import ReplyKeyboardMarkup
 from aiogram.types import ReplyKeyboardRemove
+from aiogram.types import ContentType
 
 from handlers.user.menu import settings
 from states import CategoryState, ProductState
@@ -162,3 +163,17 @@ async def process_body(message: Message, state: FSMContext):
 
     await ProductState.next()
     await message.answer('Додати фото?', reply_markup=back_markup())
+
+
+@dp.message_handler(IsAdmin(), content_types=ContentType.PHOTO,
+                    state=ProductState.image)
+async def process_image_photo(message: Message, state: FSMContext):
+    fileID = message.photo[-1].file_id
+    file_info = await bot.get_file(fileID)
+    downloaded_file = (await bot.download_file(file_info.file_path)).read()
+
+    async with state.proxy() as data:
+        data['image'] = downloaded_file
+
+    await ProductState.next()
+    await message.answer('Яка ціна?', reply_markup=back_markup())
