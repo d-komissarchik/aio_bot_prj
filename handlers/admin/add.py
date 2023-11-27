@@ -237,3 +237,11 @@ async def delete_product_callback_handler(query: CallbackQuery,
     db.query('DELETE FROM products WHERE idx=?', (product_idx,))
     await query.answer('Видалено!')
     await query.message.delete()
+
+@dp.message_handler(IsAdmin(), text=back_message, state=ProductState.confirm)
+async def process_confirm_back(message: Message, state: FSMContext):
+    await ProductState.price.set()
+
+    async with state.proxy() as data:
+        await message.answer(f"Змінити ціну <b>{data['price']}</b>?",
+                             reply_markup=back_markup())
