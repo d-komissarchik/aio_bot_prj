@@ -13,15 +13,16 @@ from states import CategoryState, ProductState
 from loader import bot
 from loader import dp, db
 from filters import IsAdmin
+from keyboards.default.markups import *
+
 
 category_cb = CallbackData('category', 'id', 'action')
 product_cb = CallbackData('product', 'id', 'action')
 
-cancel_message = '🚫 Скасувати'
+
 add_product = '➕ Додати гру'
 delete_category = '🗑️ Видалити категорію'
-back_message = '👈 Назад'
-all_right_message = '✅ Все вірно'
+
 
 
 @dp.message_handler(IsAdmin(), text=settings)
@@ -136,12 +137,6 @@ async def process_title(message: Message, state: FSMContext):
     await message.answer('Який опис?', reply_markup=back_markup())
 
 
-def back_markup():
-    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-    markup.add(back_message)
-    return markup
-
-
 @dp.message_handler(IsAdmin(), text=back_message, state=ProductState.title)
 async def process_title_back(message: Message, state: FSMContext):
     await process_add_product(message)
@@ -197,13 +192,6 @@ async def process_price(message: Message, state: FSMContext):
         await message.answer_photo(photo=data['image'],
                                    caption=text,
                                    reply_markup=markup)
-
-
-def check_markup():
-    markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-    markup.row(back_message, all_right_message)
-
-    return markup
 
 
 @dp.message_handler(IsAdmin(), text=all_right_message,
