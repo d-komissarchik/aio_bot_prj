@@ -269,3 +269,10 @@ async def process_price_invalid(message: Message, state: FSMContext):
     else:
         await message.answer('Вкажіть ціну у вигляді числа!')
 
+
+@dp.message_handler(IsAdmin(),
+                    lambda message: message.text not in [back_message,
+                                                         all_right_message],
+                    state=ProductState.confirm)
+async def process_confirm_invalid(message: Message, state: FSMContext):
+    await message.answer('Підтвердьте дію нажав на кнопку підтвердження або назад.')
