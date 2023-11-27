@@ -256,3 +256,16 @@ async def process_image_url(message: Message, state: FSMContext):
                                  reply_markup=back_markup())
     else:
         await message.answer('Вам необхідно надіслати фото гри.')
+
+
+@dp.message_handler(IsAdmin(), lambda message: not message.text.isdigit(),
+                    state=ProductState.price)
+async def process_price_invalid(message: Message, state: FSMContext):
+    if message.text == back_message:
+        await ProductState.image.set()
+        async with state.proxy() as data:
+            await message.answer("Інше зображення?",
+                                 reply_markup=back_markup())
+    else:
+        await message.answer('Вкажіть ціну у вигляді числа!')
+
