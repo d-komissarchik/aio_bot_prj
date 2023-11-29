@@ -13,8 +13,6 @@ async def process_catalog(message: Message):
                          reply_markup=categories_markup())
 
 
-
-
 @dp.callback_query_handler(IsUser(), category_cb.filter(action='view'))
 async def category_callback_handler(query: CallbackQuery, callback_data: dict):
 
