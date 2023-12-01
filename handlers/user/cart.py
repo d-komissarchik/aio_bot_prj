@@ -10,6 +10,8 @@ from .menu import cart
 from keyboards.inline.products_from_cart import product_markup
 from keyboards.inline.products_from_catalog import product_cb
 from states import CheckoutState
+from keyboards.default.markups import *
+
 
 @dp.message_handler(IsUser(), text=cart)
 async def process_cart(message: Message, state: FSMContext):
@@ -83,3 +85,15 @@ async def process_checkout(message: Message, state: FSMContext):
 
     await CheckoutState.check_cart.set()
     await checkout(message, state)
+
+async def checkout(message, state):
+    answer = ''
+    total_price = 0
+
+    async with state.proxy() as data:
+        for title, price, count_in_cart in data['products'].values():
+            tp = count_in_cart * price
+            answer += f'<b>{title}</b> * {count_in_cart}шт. = {tp}грн\n'
+            total_price += tp
+    await message.answer(f'{answer}\nЗагальна сума замовлення: {total_price}грн.',
+                         reply_markup=check_markup())
