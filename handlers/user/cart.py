@@ -79,12 +79,11 @@ async def product_callback_handler(query: CallbackQuery, callback_data: dict,
                         product_markup(idx, count_in_cart))
 
 
-
 @dp.message_handler(IsUser(), text='📦 Оформити замовлення')
 async def process_checkout(message: Message, state: FSMContext):
-
     await CheckoutState.check_cart.set()
     await checkout(message, state)
+
 
 async def checkout(message, state):
     answer = ''
@@ -97,3 +96,11 @@ async def checkout(message, state):
             total_price += tp
     await message.answer(f'{answer}\nЗагальна сума замовлення: {total_price}грн.',
                          reply_markup=check_markup())
+
+
+@dp.message_handler(IsUser(),
+                    lambda message: message.text not in [all_right_message,
+                                                         back_message],
+                    state=CheckoutState.check_cart)
+async def process_check_cart_invalid(message: Message):
+    await message.reply('Такого варіанта не було.')
