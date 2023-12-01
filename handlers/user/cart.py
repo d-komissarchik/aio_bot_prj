@@ -9,7 +9,7 @@ from loader import db, dp, bot
 from .menu import cart
 from keyboards.inline.products_from_cart import product_markup
 from keyboards.inline.products_from_catalog import product_cb
-
+from states import CheckoutState
 
 @dp.message_handler(IsUser(), text=cart)
 async def process_cart(message: Message, state: FSMContext):
@@ -75,3 +75,11 @@ async def product_callback_handler(query: CallbackQuery, callback_data: dict,
                              (count_in_cart, query.message.chat.id, idx))
                     await query.message.edit_reply_markup(
                         product_markup(idx, count_in_cart))
+
+
+
+@dp.message_handler(IsUser(), text='📦 Оформити замовлення')
+async def process_checkout(message: Message, state: FSMContext):
+
+    await CheckoutState.check_cart.set()
+    await checkout(message, state)
