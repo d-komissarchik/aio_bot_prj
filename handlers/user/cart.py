@@ -146,3 +146,11 @@ async def process_address_back(message: Message, state: FSMContext):
                              reply_markup=back_markup())
     await CheckoutState.name.set()
 
+
+@dp.message_handler(IsUser(), state=CheckoutState.address)
+async def process_address(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['address'] = message.text
+    await confirm(message)
+    await CheckoutState.next()
+
