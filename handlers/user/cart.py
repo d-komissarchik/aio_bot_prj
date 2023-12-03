@@ -111,3 +111,11 @@ async def process_check_cart_invalid(message: Message):
 async def process_check_cart_back(message: Message, state: FSMContext):
     await state.finish()
     await process_cart(message, state)
+
+
+@dp.message_handler(IsUser(), text=all_right_message,
+                    state=CheckoutState.check_cart)
+async def process_check_cart_all_right(message: Message, state: FSMContext):
+    await CheckoutState.next()
+    await message.answer('Вкажіть своє ім'я.',
+                         reply_markup=back_markup())
