@@ -117,5 +117,4 @@ async def process_check_cart_back(message: Message, state: FSMContext):
                     state=CheckoutState.check_cart)
 async def process_check_cart_all_right(message: Message, state: FSMContext):
     await CheckoutState.next()
-    await message.answer('Вкажіть своє ім'я.',
-                         reply_markup=back_markup())
+    await message.answer('Вкажіть своє ім"я.', reply_markup=back_markup())
