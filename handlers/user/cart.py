@@ -124,3 +124,17 @@ async def process_check_cart_all_right(message: Message, state: FSMContext):
 async def process_name_back(message: Message, state: FSMContext):
     await CheckoutState.check_cart.set()
     await checkout(message, state)
+
+@dp.message_handler(IsUser(), state=CheckoutState.name)
+async def process_name(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['name'] = message.text
+        if 'address' in data.keys():
+            await confirm(message)
+            await CheckoutState.confirm.set()
+        else:
+            await CheckoutState.next()
+            await message.answer('Вкажіть адресу доставки.',
+                                 reply_markup=back_markup())
+
+
