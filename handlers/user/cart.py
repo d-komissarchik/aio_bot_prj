@@ -154,3 +154,11 @@ async def process_address(message: Message, state: FSMContext):
     await confirm(message)
     await CheckoutState.next()
 
+
+async def confirm(message):
+    await message.answer(
+        'Переконайтеся, що все правильно оформлено та підтвердіть замовлення.',
+        reply_markup=confirm_markup())
+
+
+
