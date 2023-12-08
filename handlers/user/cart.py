@@ -161,4 +161,10 @@ async def confirm(message):
         reply_markup=confirm_markup())
 
 
+@dp.message_handler(IsUser(),
+                    lambda message: message.text not in [confirm_message,
+                                                         back_message],
+                    state=CheckoutState.confirm)
+async def process_confirm_invalid(message: Message):
+    await message.reply('Такого варіанта не було.')
 
