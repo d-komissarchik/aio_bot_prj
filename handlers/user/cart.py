@@ -168,11 +168,10 @@ async def confirm(message):
 async def process_confirm_invalid(message: Message):
     await message.reply('Такого варіанта не було.')
 
+
 @dp.message_handler(IsUser(), text=back_message, state=CheckoutState.confirm)
 async def process_confirm(message: Message, state: FSMContext):
-
     await CheckoutState.address.set()
-
     async with state.proxy() as data:
         await message.answer('Змінити адресу <b>' + data['address'] + '</b>?',
                              reply_markup=back_markup())
