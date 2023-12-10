@@ -2,9 +2,8 @@ from filters import IsUser
 from aiogram.types import Message
 from aiogram.dispatcher import FSMContext
 from aiogram.types.chat import ChatActions
-from aiogram.types import ReplyKeyboardMarkup
-from aiogram.types import CallbackQuery
 from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove
+from aiogram.types import CallbackQuery
 import logging
 
 from loader import db, dp, bot
@@ -184,3 +183,15 @@ async def process_confirm(message: Message, state: FSMContext):
 async def process_confirm(message: Message, state: FSMContext):
     markup = ReplyKeyboardRemove()
     logging.info('Deal was made.')
+    async with state.proxy() as data:
+        cid = message.chat.id
+        products = [idx + '=' + str(quantity)
+                    for idx, quantity in db.fetchall('''SELECT idx, quantity FROM cart
+        WHERE cid=?''', (cid,))]
+        db.query('INSERT INTO orders VALUES (?, ?, ?, ?)',
+                 (cid, data['name'], data['address'], ' '.join(products)))
+        db.query('DELETE FROM cart WHERE cid=?', (cid,))
+        await message.answer(
+
+            reply_markup=markup)
+    await state.finish()
