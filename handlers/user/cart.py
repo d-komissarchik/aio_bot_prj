@@ -195,4 +195,4 @@ async def process_confirm(message: Message, state: FSMContext):
             "Ваше замовлення готове! 🚀\nІм'я: <b>" + data[
                 'name'] + '</b>\nАдресa: <b>' + data['address'] + '</b>',
             reply_markup=markup)
-
+    await state.finish()
