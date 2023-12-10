@@ -192,6 +192,7 @@ async def process_confirm(message: Message, state: FSMContext):
                  (cid, data['name'], data['address'], ' '.join(products)))
         db.query('DELETE FROM cart WHERE cid=?', (cid,))
         await message.answer(
-
+            "Ваше замовлення готове! 🚀\nІм'я: <b>" + data[
+                'name'] + '</b>\nАдресa: <b>' + data['address'] + '</b>',
             reply_markup=markup)
-    await state.finish()
+
