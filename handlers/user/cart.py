@@ -4,6 +4,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types.chat import ChatActions
 from aiogram.types import ReplyKeyboardMarkup
 from aiogram.types import CallbackQuery
+from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove
+import logging
 
 from loader import db, dp, bot
 from .menu import cart
@@ -175,3 +177,10 @@ async def process_confirm(message: Message, state: FSMContext):
     async with state.proxy() as data:
         await message.answer('Змінити адресу <b>' + data['address'] + '</b>?',
                              reply_markup=back_markup())
+
+
+@dp.message_handler(IsUser(), text=confirm_message,
+                    state=CheckoutState.confirm)
+async def process_confirm(message: Message, state: FSMContext):
+    markup = ReplyKeyboardRemove()
+    logging.info('Deal was made.')
