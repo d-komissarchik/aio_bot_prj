@@ -9,4 +9,7 @@ async def process_delivery_status(message: Message):
     orders = db.fetchall('SELECT * FROM orders WHERE cid=?',
                          (message.chat.id,))
 
-
+    if len(orders) == 0:
+        await message.answer('Ви не маєте активних замовлень.')
+    else:
+        await delivery_status_answer(message, orders)
