@@ -7,3 +7,12 @@ from filters import IsAdmin
 @dp.message_handler(IsAdmin(), text=orders)
 async def process_orders(message: Message):
     orders = db.fetchall('SELECT * FROM orders')
+    if len(orders) == 0:
+        await message.answer('У вас немає замовлень.')
+    else:
+        await order_answer(message, orders)
+
+
+async def order_answer(message, orders):
+    pass
+
