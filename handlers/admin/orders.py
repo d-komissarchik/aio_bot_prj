@@ -14,5 +14,9 @@ async def process_orders(message: Message):
 
 
 async def order_answer(message, orders):
-    pass
+    res = ''
+    for order in orders:
+        res += f'Замовлення <b>№{order[3]}</b>\n\n'
+    await message.answer(res)
+
 
