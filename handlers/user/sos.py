@@ -1,7 +1,6 @@
 from aiogram.dispatcher import FSMContext
 from aiogram.types import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from keyboards.default.markups import all_right_message, cancel_message, \
-    submit_markup
+#from keyboards.default.markups import all_right_message, cancel_message, \submit_markup
 from aiogram.types import Message
 from states import SosState
 from filters import IsUser
