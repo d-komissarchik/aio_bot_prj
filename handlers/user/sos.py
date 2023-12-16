@@ -14,3 +14,13 @@ async def cmd_sos(message: Message):
         "Опишіть якомога детальніше суть проблеми "
         "та адміністратор обов'язково вам відповість якнайшвидше",
         reply_markup=ReplyKeyboardRemove())
+
+
+@dp.message_handler(state=SosState.question)
+async def process_question(message: Message, state: FSMContext):
+    async with state.proxy()as data:
+        data['question'] = message.text
+
+    await message.answer('Переконайтеся, що все правильно.',
+                         reply_markup=submit_markup())
+    await SosState.next()
