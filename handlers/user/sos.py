@@ -20,7 +20,6 @@ async def cmd_sos(message: Message):
 async def process_question(message: Message, state: FSMContext):
     async with state.proxy()as data:
         data['question'] = message.text
-
     await message.answer('Переконайтеся, що все правильно.',
                          reply_markup=submit_markup())
     await SosState.next()
