@@ -23,3 +23,9 @@ async def process_question(message: Message, state: FSMContext):
     await message.answer('Переконайтеся, що все правильно.',
                          reply_markup=submit_markup())
     await SosState.next()
+
+@dp.message_handler(
+    lambda message: message.text not in [cancel_message, all_right_message],
+    state=SosState.submit)
+async def process_price_invalid(message: Message):
+    await message.answer('Такого варіанта не було.')
