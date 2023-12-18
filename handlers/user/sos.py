@@ -29,3 +29,8 @@ async def process_question(message: Message, state: FSMContext):
     state=SosState.submit)
 async def process_price_invalid(message: Message):
     await message.answer('Такого варіанта не було.')
+
+@dp.message_handler(text=cancel_message, state=SosState.submit)
+async def process_cancel(message: Message, state: FSMContext):
+    await message.answer('Скасовано!', reply_markup=ReplyKeyboardRemove())
+    await state.finish()
