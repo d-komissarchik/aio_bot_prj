@@ -40,11 +40,8 @@ async def process_cancel(message: Message, state: FSMContext):
 @dp.message_handler(text=all_right_message, state=SosState.submit)
 async def process_submit(message: Message, state: FSMContext):
     cid = message.chat.id
-
     if db.fetchone('SELECT * FROM questions WHERE cid=?', (cid,)) is None:
-
         async with state.proxy() as data:
             db.query('INSERT INTO questions VALUES (?, ?)',
                      (cid, data['question']))
-
         await message.answer('Надіслано!', reply_markup=ReplyKeyboardRemove())
