@@ -45,3 +45,11 @@ async def process_submit(message: Message, state: FSMContext):
             db.query('INSERT INTO questions VALUES (?, ?)',
                      (cid, data['question']))
         await message.answer('Надіслано!', reply_markup=ReplyKeyboardRemove())
+    else:
+
+        await message.answer(
+            'Перевищено ліміт на кількість питань.',
+            reply_markup=ReplyKeyboardRemove())
+
+    await state.finish()
+
