@@ -34,3 +34,9 @@ async def process_answer(query: CallbackQuery, callback_data: dict,
     await query.message.answer('Напиши відповідь.',
                                reply_markup=ReplyKeyboardRemove())
     await AnswerState.answer.set()
+
+@dp.message_handler(IsAdmin(), state=AnswerState.answer)
+async def process_submit(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['answer'] = message.text
+    await AnswerState.next()
