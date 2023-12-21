@@ -7,6 +7,7 @@ from aiogram.types.chat import ChatActions
 
 from loader import dp, db, bot
 from filters import IsAdmin
+from states import AnswerState
 
 question_cb = CallbackData('question', 'cid', 'action')
 
@@ -23,3 +24,13 @@ async def process_questions(message: Message):
                 'Відповісти',
                 callback_data=question_cb.new(cid=cid, action='answer')))
             await message.answer(question, reply_markup=markup)
+
+
+@dp.callback_query_handler(IsAdmin(), question_cb.filter(action='answer'))
+async def process_answer(query: CallbackQuery, callback_data: dict,
+                         state: FSMContext):
+    async with state.proxy() as data:
+        data['cid'] = callback_data['cid']
+    await query.message.answer('Напиши відповідь.',
+                               reply_markup=ReplyKeyboardRemove())
+    await AnswerState.answer.set()
