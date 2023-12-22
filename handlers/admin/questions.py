@@ -49,3 +49,7 @@ async def process_submit(message: Message, state: FSMContext):
 async def process_send_answer(message: Message, state: FSMContext):
     await message.answer('Скасовано!', reply_markup=ReplyKeyboardRemove())
     await state.finish()
+
+
+@dp.message_handler(IsAdmin(), text=all_right_message, state=AnswerState.submit)
+async def process_send_answer(message: Message, state: FSMContext):
