@@ -28,5 +28,4 @@ def confirm_markup():
 def submit_markup():
     markup = ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
     markup.row(cancel_message, all_right_message)
-
     return markup

@@ -44,3 +44,8 @@ async def process_submit(message: Message, state: FSMContext):
     await message.answer('Переконайтеся, що ви не помилилися у відповіді.',
                          reply_markup=submit_markup())
 
+
+@dp.message_handler(IsAdmin(), text=cancel_message, state=AnswerState.submit)
+async def process_send_answer(message: Message, state: FSMContext):
+    await message.answer('Скасовано!', reply_markup=ReplyKeyboardRemove())
+    await state.finish()
