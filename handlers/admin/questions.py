@@ -53,3 +53,10 @@ async def process_send_answer(message: Message, state: FSMContext):
 
 @dp.message_handler(IsAdmin(), text=all_right_message, state=AnswerState.submit)
 async def process_send_answer(message: Message, state: FSMContext):
+    async with state.proxy() as data:
+        answer = data['answer']
+        cid = data['cid']
+        question = db.fetchone(
+            'SELECT question FROM questions WHERE cid=?', (cid,))[0]
+        db.query('DELETE FROM questions WHERE cid=?', (cid,))
+        text = f'Питання: <b>{question}</b>\n\nВідповідь: <b>{answer}</b>'
