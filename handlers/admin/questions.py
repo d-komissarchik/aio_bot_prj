@@ -60,4 +60,8 @@ async def process_send_answer(message: Message, state: FSMContext):
             'SELECT question FROM questions WHERE cid=?', (cid,))[0]
         db.query('DELETE FROM questions WHERE cid=?', (cid,))
         text = f'Питання: <b>{question}</b>\n\nВідповідь: <b>{answer}</b>'
+        await message.answer('Надіслано!', reply_markup=ReplyKeyboardRemove())
+        await bot.send_message(cid, text)
+    await state.finish()
+
 
