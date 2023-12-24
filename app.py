@@ -42,7 +42,6 @@ async def user_mode(message: types.Message):
     cid = message.chat.id
     if cid in ADMINS:
         ADMINS.remove(cid)
-
     await message.answer('Увімкнено режим покупця.',
                          reply_markup=ReplyKeyboardRemove())
 
