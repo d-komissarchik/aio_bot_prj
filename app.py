@@ -16,9 +16,7 @@ admin_message = 'Адмін'
 @dp.message_handler(commands='start')
 async def cmd_start(message: types.Message):
     markup = ReplyKeyboardMarkup(resize_keyboard=True)
-
     markup.row(user_message, admin_message)
-
     await message.answer('''👋 Привіт геймер! 🎮 
 
 🤖 Я бот-магазин з продажу ігор будь-якогу жанру.
@@ -35,7 +33,6 @@ async def admin_mode(message: types.Message):
     cid = message.chat.id
     if cid not in ADMINS:
         ADMINS.append(cid)
-
     await message.answer('Увімкнено адмінський режим.',
                          reply_markup=ReplyKeyboardRemove())
 
